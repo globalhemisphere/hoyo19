@@ -60,11 +60,11 @@ document.addEventListener('click', function (e) {
 })();
 
 // ---------- Formularios ----------
-// Los leads se envían con Web3Forms y te llegan al correo.
-// Para activarlo: saca una access key gratis en https://web3forms.com
-// (pones tu email, te llega la key) y pégala aquí abajo entre las comillas.
-// Mientras no la pegues, el formulario funciona en modo demo (no envía).
-const WEB3FORMS_KEY = 'PEGA-AQUI-TU-ACCESS-KEY';
+// Los leads se envían con FormSubmit y te llegan al correo. No hace falta key.
+// La PRIMERA vez que alguien envíe el formulario, FormSubmit te manda un email
+// de confirmación a esta dirección: ábrelo y pulsa "Activate Form" una sola vez.
+// A partir de ahí, todos los leads te llegan directos.
+const FORMSUBMIT_EMAIL = 'info@globalhemisphere.com';
 
 document.addEventListener('submit', async function (e) {
   e.preventDefault();
@@ -74,21 +74,17 @@ document.addEventListener('submit', async function (e) {
   const inModal = form.closest('.modal-overlay');
   if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
 
-  const keyReady = WEB3FORMS_KEY && WEB3FORMS_KEY.indexOf('PEGA') !== 0;
-
   try {
-    if (keyReady) {
-      const data = Object.fromEntries(new FormData(form).entries());
-      data.access_key = WEB3FORMS_KEY;
-      data.subject = 'Nuevo lead Hoyo 19 · ' + (data.origen || 'Web');
-      data.from_name = 'Web Hoyo 19';
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) throw new Error('network');
-    }
+    const data = Object.fromEntries(new FormData(form).entries());
+    data._subject = 'Nuevo lead Hoyo 19 · ' + (data.origen || 'Web');
+    data._template = 'table';
+    data._captcha = 'false';
+    const res = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(FORMSUBMIT_EMAIL), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('network');
     if (btn) btn.textContent = 'Recibido. Te escribimos pronto.';
     form.reset();
     if (inModal) setTimeout(function () { inModal.classList.remove('open'); }, 1500);
