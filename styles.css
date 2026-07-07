@@ -203,7 +203,7 @@ section{padding:96px 0}
 .posts{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
 .post{background:#fff;border:1px solid var(--line);overflow:hidden;transition:.4s var(--ease)}
 .post:hover{transform:translateY(-5px);box-shadow:0 24px 50px -30px rgba(19,37,29,.4)}
-.post .ph{aspect-ratio:16/10}
+.post .ph{display:block;aspect-ratio:16/10}
 .post .body{padding:24px 24px 28px}
 .post .meta{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:10px}
 .post h3{font-size:24px;margin-bottom:10px;line-height:1.15}
