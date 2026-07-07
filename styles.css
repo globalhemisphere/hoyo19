@@ -78,6 +78,8 @@ header.nav{
 }
 .brand small{display:block;font-family:'Jost';font-size:8.5px;letter-spacing:.42em;
   color:var(--brass-deep);text-align:center;margin-top:-2px}
+.brand-logo{display:block;height:54px;width:auto}
+@media(max-width:600px){.brand-logo{height:44px}}
 .menu{display:flex;gap:34px;align-items:center}
 .menu a{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--text);
   transition:color .25s;position:relative;padding:4px 0}
