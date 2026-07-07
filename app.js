@@ -17,14 +17,14 @@ document.addEventListener('click', function (e) {
     <div class="modal" role="dialog" aria-modal="true" aria-label="Pide información">
       <button class="close" aria-label="Cerrar">&times;</button>
       <div class="side">
-        <span class="eyebrow">Seis escapadas al año · Plazas contadas</span>
-        <h3>¿Te vienes de escapada?</h3>
-        <p>El viaje del que hablarás toda tu vida. Tú solo llevas los palos.</p>
+        <span class="eyebrow">Seis salidas al año · Plazas contadas</span>
+        <h3>¿Cuántos años lleváis diciendo «el año que viene sí»?</h3>
+        <p>Valderrama. Teeth of the Dog. El viaje que siempre se queda en la sobremesa. Este año pasa.</p>
       </div>
       <div class="panel-form">
-        <span class="eyebrow">Sin compromiso</span>
-        <h4>Cuéntanos y te asesoramos</h4>
-        <p>Déjanos tus datos y te avisamos de cada salida antes que nadie. Si ya tienes grupo, te montamos el viaje.</p>
+        <span class="eyebrow">La lista de Hoyo 19</span>
+        <h4>Los de la lista eligen plaza primero</h4>
+        <p>Cada salida nueva se anuncia aquí antes que en ningún sitio. Cuando llega a la web, media lista ya ha reservado. Tú decides en qué lado estar.</p>
         <form>
           <input type="hidden" name="origen" value="Pop-up de entrada">
           <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
@@ -36,8 +36,8 @@ document.addEventListener('click', function (e) {
             <option>Un viaje a medida para mi grupo</option>
             <option>Solo avisadme de nuevas salidas</option>
           </select>
-          <button type="submit" class="btn btn-solid">Quiero saber más</button>
-          <p class="mini">Te respondemos en menos de 24 h. Sin spam.</p>
+          <button type="submit" class="btn btn-solid">Quiero enterarme el primero</button>
+          <p class="mini">Un email solo cuando haya viaje nuevo. Sin spam. Te borras con un clic.</p>
         </form>
       </div>
     </div>`;
