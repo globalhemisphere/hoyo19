@@ -60,10 +60,11 @@ document.addEventListener('click', function (e) {
 })();
 
 // ---------- Formularios ----------
-// Los leads se envían con FormSubmit y te llegan al correo. No hace falta key.
-// La PRIMERA vez que alguien envíe el formulario, FormSubmit te manda un email
-// de confirmación a esta dirección: ábrelo y pulsa "Activate Form" una sola vez.
-// A partir de ahí, todos los leads te llegan directos.
+// Tubería directa: el formulario manda el lead a la función de Cloudflare
+// (hoyo19-leads.pages.dev), que crea la fila en la "Base de datos Hoyo 19"
+// de Notion al momento y manda el aviso por email vía FormSubmit.
+// Si la función fallara, plan B: FormSubmit directo (al menos llega el email).
+const LEADS_ENDPOINT = 'https://hoyo19-leads.pages.dev/api/lead';
 const FORMSUBMIT_EMAIL = 'info@globalhemisphere.com';
 
 document.addEventListener('submit', async function (e) {
@@ -74,23 +75,39 @@ document.addEventListener('submit', async function (e) {
   const inModal = form.closest('.modal-overlay');
   if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
 
-  try {
-    const data = Object.fromEntries(new FormData(form).entries());
-    data._subject = 'Nuevo lead Hoyo 19 · ' + (data.origen || 'Web');
-    data._template = 'table';
-    data._captcha = 'false';
-    const res = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(FORMSUBMIT_EMAIL), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) throw new Error('network');
+  const data = Object.fromEntries(new FormData(form).entries());
+  // Opt-in de newsletter: si el formulario tiene la casilla, manda Sí/No explícito
+  const nl = form.querySelector('input[name="newsletter"]');
+  if (nl) data.newsletter = nl.checked ? 'Sí' : 'No';
+
+  // Doble raíl en paralelo: la función mete el lead en Notion;
+  // FormSubmit manda el email de aviso (el canal de siempre).
+  // Con que uno de los dos llegue, el lead no se pierde.
+  const aNotion = fetch(LEADS_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(function (r) { return r.json(); }).then(function (j) { return !!(j && j.ok); });
+
+  const alCorreo = fetch('https://formsubmit.co/ajax/' + encodeURIComponent(FORMSUBMIT_EMAIL), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(Object.assign({
+      _subject: 'Nuevo lead Hoyo 19 · ' + (data.origen || 'Web'),
+      _template: 'table',
+      _captcha: 'false'
+    }, data))
+  }).then(function (r) { return r.ok; });
+
+  const results = await Promise.allSettled([aNotion, alCorreo]);
+  const ok = results.some(function (r) { return r.status === 'fulfilled' && r.value; });
+
+  if (ok) {
     if (btn) btn.textContent = 'Recibido. Te escribimos pronto.';
     form.reset();
     if (inModal) setTimeout(function () { inModal.classList.remove('open'); }, 1500);
-  } catch (err) {
-    if (btn) btn.textContent = 'Ups, inténtalo otra vez';
-  } finally {
-    if (btn) setTimeout(function () { btn.textContent = original; btn.disabled = false; }, 4000);
+  } else if (btn) {
+    btn.textContent = 'Ups, inténtalo otra vez';
   }
+  if (btn) setTimeout(function () { btn.textContent = original; btn.disabled = false; }, 4000);
 });
