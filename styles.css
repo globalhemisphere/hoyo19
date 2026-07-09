@@ -241,6 +241,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brass);b
 select option{color:#13251d}
 textarea{min-height:120px;resize:vertical}
 .form-note{font-size:13px;color:rgba(255,255,255,.55)}
+.opt-in{display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-top:-4px}
+.opt-in input{width:auto;flex:none;margin-top:2px;padding:0;accent-color:var(--brass)}
+.opt-in span{font-size:13.5px;letter-spacing:0;text-transform:none;color:rgba(255,255,255,.72);line-height:1.45}
+.modal .opt-in span{color:var(--muted)}
 
 /* ---------- newsletter ---------- */
 .news{background:var(--sand);text-align:center}
